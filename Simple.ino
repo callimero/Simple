@@ -114,7 +114,7 @@
 
 
 
-#define MAX_PTS 2000
+#define MAX_PTS 4000
 static unsigned rx_points;
 static unsigned num_points;
 static uint32_t points[MAX_PTS];
@@ -157,8 +157,9 @@ static uint16_t y_pos;
 #define THRU 2    // Analog
 #define POTX 3    // Analog
 #define POTY 4    // Analog
-#define DEADX 30  // Deadband X
-#define DEADY 30  // Deadband Y
+#define DEADX 70  // Deadband X
+#define DEADY 70  // Deadband Y
+#define DEADT 50  // Deadband Z
 
 
 // fast but coarse sin table
@@ -639,8 +640,26 @@ void draw_object(byte c, int x, int y, int size, int rot)
 }
 
 
-
-
+int joyx,joyy,joyz;
+void joystick()
+{
+  // Joystick auslesen
+  if (analogRead(POTX) > 512 + DEADX || analogRead(POTX) < 512 - DEADX)
+  {
+    joyx = (analogRead(POTX) - 512);
+  }
+  else joyx=0;
+  if (analogRead(POTY) > 512 + DEADY || analogRead(POTY) < 512 - DEADY)
+  {
+   joyy = (analogRead(POTY) - 512);
+   }
+  else joyy=0;
+for (unsigned n = 0 ; n < 100 ; n++)
+  {
+   joyz = joyz+(analogRead(THRU)/2);
+  }
+  joyz=joyz/100;
+  }
 
 
 

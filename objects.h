@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MAXPOINTS 61
+#define MAXPOINTS 800
 
 typedef struct
 {
