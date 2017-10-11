@@ -1,6 +1,6 @@
 // Main display function in game
 
-char inChar = '5';
+char inChar = '6';
 
 void video()
 {
@@ -27,6 +27,9 @@ void video()
       break;
     case '5':
     world();
+      break;
+    case '6':
+    sparky();
       break;
     default:
         HalloMake();
