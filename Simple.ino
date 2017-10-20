@@ -59,7 +59,7 @@
 #define REST_X		0	// wait off screen
 #define REST_Y		0
 
-#define FULL_SCALE		// only use -1.25 to 1.25V range
+#define FULL_SCALE		// undef to only use -1.25 to 1.25V range
 
 // most vector scopes don't have brightness control, but set it anyway
 #define CONFIG_BRIGHTNESS
@@ -67,7 +67,10 @@
 #define BRIGHT_OFF	2048	// "0 volts", relative to reference
 #define BRIGHT_NORMAL	3800	// lowest visible
 #define BRIGHT_BRIGHT	4095	// super bright
-#define OFF_DWELL0  10  // time to sit beam on before starting a transit
+#define OFF_DWELL0  1  // time to sit beam on before starting a transit
+#define OFF_DWELL1  1  
+#define OFF_SHIFT  1  
+#define OFF_DWELL2  1  
 
 
 #elif defined(CONFIG_VECTREX)
@@ -114,7 +117,7 @@
 
 
 
-#define MAX_PTS 4000
+#define MAX_PTS 2000
 static unsigned rx_points;
 static unsigned num_points;
 static uint32_t points[MAX_PTS];
@@ -126,8 +129,8 @@ static uint32_t points[MAX_PTS];
 
 
 static DMAChannel spi_dma;
-#define SPI_DMA_MAX 4096
-//#define SPI_DMA_MAX 2048 // ??
+//#define SPI_DMA_MAX 4096
+#define SPI_DMA_MAX 2048 // ??
 static uint32_t spi_dma_q[2][SPI_DMA_MAX];
 static unsigned spi_dma_which;
 static unsigned spi_dma_count;
@@ -261,18 +264,18 @@ spi_dma_tx()
 
 static int spi_dma_tx_complete()
 {
-  //cli();
+  cli();
 
   // if nothing is in progress, we're "complete"
   if (!spi_dma_in_progress)
   {
-    //sei();
+    sei();
     return 1;
   }
 
   if (!spi_dma.complete())
   {
-    //sei();
+    sei();
     return 0;
   }
 
@@ -283,7 +286,7 @@ static int spi_dma_tx_complete()
 
   // the DMA hardware lies; it is not actually complete
   delayMicroseconds(5);
-  //sei();
+  sei();
 
   // we are done!
   SPI0_RSER = 0;
@@ -553,8 +556,8 @@ static inline void _draw_lineto(int x1, int y1, const int bright_shift)
   }
 
   // ensure that we end up exactly where we want or don't care
-//  goto_x(x1_orig);
-//  goto_y(y1_orig);
+  goto_x(x1_orig);
+  goto_y(y1_orig);
 }
 
 
@@ -681,18 +684,17 @@ void draw_rect(int x0,int y0,int x1,int y1)
 long fps;
 void loop()
 {
-
-  elapsedMicros waiting;    // Auto updating
+  elapsedMicros waiting;    // Auto updating variable
   rx_points = 0;
   char buf[12];
 
-  // Serial.println(fpsi);
-
   video();
 
+#ifdef DEBUGFPS
   // FPS drawing DEBUG!
   draw_string("FPS:", 3000, 150, 6);
   draw_string(itoa(fps, buf, 10), 3400, 150, 6);
+#endif
 
   num_points = rx_points;
 
@@ -719,11 +721,11 @@ void loop()
   goto_x(REST_X);
   goto_y(REST_Y);
 
+  // while (waiting < 30*10000);   //limit frame rate 33fps max (approx)
 
-  //while (waiting < 10000)   //limit frame rate 100fps max
-  // ;
+#ifdef DEBUGFPS   
   fps = 1000000 / waiting;
-
+#endif
 }
 
 

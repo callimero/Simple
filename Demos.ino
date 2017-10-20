@@ -84,35 +84,92 @@ void world()
 }
 
 
-
+// Funktion um Vorzeichen zu finden
 int sgn(int val) {
   if (val < 0) return -1;
   if (val == 0) return 0;
   return 1;
 }
 
-int xc0, yc0, sx0, sy0, xc1, yc1, sx1, sy1;
+
+int xc0, yc0, sx0, sy0, xc1, yc1, sx1, sy1, tidx;
 void sparky()
 {
+  const int fak = 150, off = 80; //Zufalls Bereich (fak+off) und Offset (Minimum)
+
   if (xc0 == 0 && yc0 == 0) // Ja mach ich noch besser ;-)
   {
     xc0 = rand() % 4096;
     yc0 = rand() % 4096;
     xc1 = rand() % 4096;
     yc1 = rand() % 4096;
-    sx0 = rand() % 20;
-    sy0 = rand() % 20;
-    sx1 = rand() % 20;
-    sy1 = rand() % 20;
+    sx0 = rand() % fak + off;
+    sy0 = rand() % fak + off;
+    sx1 = rand() % fak + off;
+    sy1 = rand() % fak + off;
   }
+
+  // Zufälliges abprallen, nix Physik hier :-)
   xc0 = xc0 + sx0;
-  if (xc0 > 4095 || xc0 <= 0) sx0 = sx0 * -1 + rand() % 4 * sgn(sx0); //Aufteilen in > und < kleiner check
+  if (xc0 > 4095) sx0 = -(rand() % fak + off);
+  if (xc0 <= 0)   sx0 =  (rand() % fak + off);
+
   yc0 = yc0 + sy0;
-  if (yc0 > 4095 || yc0 <= 0) sy0 = sy0 * -1 + rand() % 4 * sgn(sy0);
+  if (yc0 > 4095) sy0 = -(rand() % fak + off);
+  if (yc0 <= 0)   sy0 =  (rand() % fak + off);
+
   xc1 = xc1 + sx1;
-  if (xc1 > 4095 || xc1 <= 0) sx1 = sx1 * -1 + rand() % 4 * sgn(sx1);
+  if (xc1 > 4095) sx1 = -(rand() % fak + off);
+  if (xc1 <= 0)   sx1 =  (rand() % fak + off);
+
   yc1 = yc1 + sy1;
-  if (yc1 > 4095 || yc1 <= 0) sy1 = sy1 * -1 + rand() % 4 * sgn(sy1);
+  if (yc1 > 4095) sy1 = -(rand() % fak + off);
+  if (yc1 <= 0)   sy1 =  (rand() % fak + off);
+
   moveto(xc0, yc0); //Startpunkt
   lineto(xc1, yc1);
+
+  xc[idx] = xc0; // vorherigen Linien merken
+  yc[idx] = yc0;
+  xc[idx + 20] = xc1;
+  yc[idx + 20] = yc1;
+  idx = (idx + 1) % 20; //globaler Index (20 Linien a 2 XY Koordinaten)
+
+  for (int i = 0; i < 20; i++)
+  {
+    tidx = (idx + i ) % 20;
+    moveto(xc[tidx], yc[tidx]);
+    lineto(xc[tidx + 20], yc[tidx + 20]);
+  }
 }
+
+
+// einfache Lissajous-Figuren
+void lisa()
+{
+  const float pi = 3.14159265359;
+  float xf = 0.0;
+  float yf = 0.0;
+  float rad;
+  int xx, yy;
+
+  for (int w = 0; w <= 360; w = w + 1)
+  {
+    rad = w * pi / 180.0;
+
+    // aktuelle Funktion. Faktoren 1.0 und 1.0 ergibt einen Kreis
+    xf = sin(rad * 3.0);
+    yf = cos(rad * 7.0);
+
+    // anpassen an Kordinaten/Aspekt (hier 4:3) und Integerumrechnung
+    xx = int(xf * 768.0) + 2048;
+    yy = int(yf * 1024.0) + 2048;
+    if (w == 0)
+      moveto(xx, yy);
+    else
+      lineto(xx, yy);
+  }
+}
+
+
+
