@@ -1,6 +1,6 @@
 // Main display function in game
 
-char inChar = '8';
+char inChar = '2';
 
 void demoloop()
 {
@@ -33,6 +33,9 @@ void demoloop()
       break;
     case '7':
       lisa();
+      break;
+    case '8':
+      SpinMakey();
       break;
     default:
       HalloMake();

@@ -152,7 +152,7 @@ static uint16_t y_pos;
 #define DAC_Y_CHAN 1
 #endif
 
-
+#define DEBUGFPS
 
 // Joystick
 #define BUTT 14   // Digital

@@ -423,7 +423,7 @@ const  objects_char_t gobjects[] = {
 
 
 
-{172,          //Makey 
+{172,          //Makey
 33,-3,
 33,0,
 34,0,
@@ -597,6 +597,8 @@ const  objects_char_t gobjects[] = {
 5,-19,
 18,-19,
 },
+
+
 
 
   { 1,          //Platzhalter 12
