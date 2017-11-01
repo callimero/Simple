@@ -1,3 +1,87 @@
+/*
+ * Demofunktionen als Anregung
+ */
+
+
+// Hilfsvariablen im globalen Kontext
+// Arrays fürs Merken von Koordinaten/Geschwindigkeit/etc
+int xc[40];
+int yc[40];
+int sx[40];
+int sy[40];
+int n[40];
+int g[40];
+
+int idx;
+char buf[12]; // itoa() buffer
+elapsedMillis wait;    // Auto updating variable, fürs Timing
+
+
+// Supportfunktion für die Zufallszahlen
+void new_num(int c)
+{
+  g[c]  = rand() % 25 + 4;
+  xc[c] = rand() % 3800;
+  yc[c] = rand() % 3800;
+  n[c]  = rand() % 100;
+  wait = 0;
+}
+
+// Zufallszahlen
+void zahlensalat()
+{
+  //Zeichnen
+  for (int i = 0; i <= 30; i++) // 30 Zahlen
+  {
+    if (g[i] != 0)
+    {
+      draw_string(itoa(n[i], buf, 10), xc[i], yc[i], g[i]);
+    }
+    else
+    {
+      new_num(i); // Init wenn noch nicht belegt, auskommentieren wenn langsames füllen erwünscht
+    }
+
+  }
+  if (wait > 500) new_num(rand() % 30); // Alle 500ms einmal neue Zahl
+}
+
+
+// Ziffern skalieren bis zur Löschung.
+void zahlensalat2()
+{
+  //Zeichnen
+  for (int i = 0; i <= 30; i++) // 30 Zahlen
+  {
+    if (g[i] > 0)
+    {
+      draw_string(itoa(n[i], buf, 10), xc[i], yc[i], g[i]/100);
+      g[i]=g[i]-5;
+    }
+    else
+    {
+      new_num(i); 
+      g[i]=g[i]*100; 
+    }
+  }
+}
+
+
+// Zufallszahlen (sehr wuselig, in jedem Frame unterschdlich)
+void rnd_numbers()
+{
+  // Zufallszahlen (Zehn Stück)
+  char buf[12];
+  for (int i = 0; i <= 10; i++)
+  {
+    draw_string(itoa(rand() % 100, buf, 10), rand() % 3800, rand() % 3800, rand() % 25 + 4);
+  }
+}
+
+
+
+
+// Hallo World der Vektordisplays
 void HalloMake()
 {
   // Koordinatenbereich X/Y 0..4095
@@ -19,52 +103,55 @@ void HalloMake()
   draw_object(11, 2000, 2000, 40, 0); // Das ist Makey...
 }
 
-int wm = 0;
+
+// Drehender Makey
+int wm = 0;  //globaler Merker der Rotation
 void SpinMakey()
 {
   wm = (wm + 1) % 360;
   draw_object(11, 2000, 2000, 40, wm); // Das ist Makey... Wirds ihm schlecht?
-
 }
 
 
-
+// Zufallslinien (in jedem Frame unterschiedlich)
 void rnd_lines()
 {
   // Zufallslinen (Zehn Stück)
   for (int i = 0; i <= 10; i++)
   {
-    moveto(rand() % 4000, rand() % 4000);
-    lineto(rand() % 4000, rand() % 4000);
+    moveto(rand() % 4096, rand() % 4096);
+    lineto(rand() % 4096, rand() % 4096);
   }
 }
 
+
+
+
+// Zufallslinien als offener Linienzug (in jedem Frame unterschiedlich)
 void rnd_poly()
 {
   // Polygon
-  moveto(rand() % 4000, rand() % 4000); //Startpunkt
+  moveto(rand() % 4096, rand() % 4096); //Startpunkt
   for (int i = 0; i <= 10; i++) // Zehn Punkte
   {
-    lineto(rand() % 4000, rand() % 4000);
+    lineto(rand() % 4096, rand() % 4096);
   }
 }
 
+
+// Linien in Sternenform
 void rnd_star()
 {
   // "Stern"
   for (int i = 0; i <= 40; i++) // 40 Linien
   {
-    moveto(rand() % 4000, rand() % 4000); //Startpunkt
+    moveto(rand() % 4096, rand() % 4096); //Startpunkt
     lineto(2048, 2048);
   }
 }
 
-int xc[40];
-int yc[40];
-int sx[40];
-int sy[40];
-int idx;
 
+// Linien in Sternenform 2, hier aber bleiben die Linien etwas länger stehen
 void rnd_star2()
 {
   // "Stern"
@@ -78,17 +165,20 @@ void rnd_star2()
   }
 }
 
+
+// Weltkarte mit Hoystick bewegbar/skalierbar
 int wx, wy;
 void world()
 {
   joystick();
   wx = wx - joyx / 4;
   wy = wy - joyy / 4;
-  draw_object(7, 2000 + wx, 2000 + wy, 2 + joyz / 4, 0);
+  draw_object(7, 2000 + wx, 2000 + wy, 2 + joyz / 4, 0);  // meine Karte ist auf 4 Objekte verteilt
   draw_object(8, 2000 + wx, 2000 + wy, 2 + joyz / 4, 0);
   draw_object(9, 2000 + wx, 2000 + wy, 2 + joyz / 4, 0);
   draw_object(10, 2000 + wx, 2000 + wy, 2 + joyz / 4, 0);
 }
+
 
 
 // Funktion um Vorzeichen zu finden
@@ -99,7 +189,8 @@ int sgn(int val) {
 }
 
 
-int xc0, yc0, sx0, sy0, xc1, yc1, sx1, sy1, tidx;
+// Dancing Lines wie aus ganz alten "Bildschirmschonern"
+int xc0, yc0, sx0, sy0, xc1, yc1, sx1, sy1, tidx; //ein paar Merker...
 void sparky()
 {
   const int fak = 150, off = 80; //Zufalls Bereich (fak+off) und Offset (Minimum)
@@ -151,7 +242,9 @@ void sparky()
 }
 
 
-// einfache Lissajous-Figuren
+
+// einfache Lissajous-Figuren, mit Floats, wir hams ja...
+// Schöner "Blödsinn" die macht man natürlich mit zwei Frequenzgeneratoren und dem Oszi
 void lisa()
 {
   const float pi = 3.14159265359;
@@ -178,5 +271,14 @@ void lisa()
   }
 }
 
+int vx=20;
+int xp;
+// Moving Makey
+void MoveMakey()
+{
+  xp=xp+vx;
+  if (xp>2500 || xp<=0) vx=vx*-1;
+  draw_object(11, 800+xp, 2000, 20, 0); // Das ist Makey... Wirds ihm schlecht?
+}
 
 

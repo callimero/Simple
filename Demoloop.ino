@@ -1,6 +1,9 @@
-// Main display function in game
+/*
+ * Auswahl zwischen den Demos mittels Seriellem Monitor
+ * 1-9,0 und Buchstaben (siehe case)
+ */
 
-char inChar = '2';
+char inChar = '0';  // Default
 
 void demoloop()
 {
@@ -13,6 +16,7 @@ void demoloop()
 
   switch (inChar) {
     case '0':
+      MoveMakey();
       break;
     case '1':
       rnd_lines();
@@ -36,6 +40,12 @@ void demoloop()
       break;
     case '8':
       SpinMakey();
+      break;
+    case '9':
+      zahlensalat();
+      break;
+    case 'a':
+      rnd_numbers();
       break;
     default:
       HalloMake();
