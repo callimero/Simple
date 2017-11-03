@@ -721,8 +721,8 @@ void loop()
   goto_x(REST_X);
   goto_y(REST_Y);
 
-  // while (waiting < 30*10000);   //limit frame rate 33fps max (approx)
-
+//   while (waiting < 15*1000);   //limit frame rate 33fps max (approx) BROKEN!
+ 
 #ifdef DEBUGFPS   
   fps = 1000000 / waiting;
 #endif

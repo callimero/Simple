@@ -1,42 +1,15 @@
+// Globale Variablen hier definieren
+int vx = 4; //Geschwindigkeit
+int xpos;
+elapsedMillis frametime;
+
 // wird regelmäßig aufgerufen
-
-
-
 void video()
 {
-  demoloop();
-  //HalloMake();  // eine Demofunktion
-
-  /*
-    // Zufallslinen (Zehn Stück)
-    for (int i = 0; i <= 10; i++)
-    {
-      moveto(rand() % 4096, rand() % 4096);
-      lineto(rand() % 4096, rand() % 4096);
-    //    moveto(random(4096),random(4096));
-    //    lineto(random(4096),random(4096));
-    }
-  */
-
-  /*
-    // Zufallszahlen (Zehn Stück)
-    char buf[12];
-    for (int i = 0; i <= 10; i++)
-    {
-      draw_string(itoa(rand() % 100, buf, 10), rand() % 3800, rand() % 3800, rand() % 25 + 4);
-    }
-  */
-
-  /*
-    // Raster
-    for (int i = 0; i <= 4096; i=i+512)
-    {
-    moveto(0,i);
-    lineto(4095,i);
-    moveto(i,0);
-    lineto(i,4095);
-    }
-  */
-  //draw_string("Hallo Make-Magazin!", 500, 2000, 12);
+  xpos = xpos + vx * frametime;
+  frametime = 0;
+  if (xpos >= 2500 || xpos <= 0)  vx = vx * -1;
+  draw_object(11, 800 + xpos, 2000, 20, 0);       // Lauf Makey lauf!
+  // draw_string("Hallo Make-Magazin!", 500, 2000, 12);
 }
 
