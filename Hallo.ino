@@ -3,11 +3,6 @@ void HalloMake()
 {
   // Koordinatenbereich X/Y 0..4095
   // die meissten Oszilloskope haben aber einen 4:3 Bildschirm! -> Verzerrungen die herausgerechnet werden müssen
-  // X Zeichnen mit einfachen Befehlen: Ursprung ist unten Links
-  moveto(3000, 3000);
-  lineto(3500, 3500);
-  moveto(3000, 3500);
-  lineto(3500, 3000);
 
   // Einfache Supportfunktion um Rechtecke zu zeichnen aus Simple.ino
   draw_rect(0, 0, 4095, 4095);
